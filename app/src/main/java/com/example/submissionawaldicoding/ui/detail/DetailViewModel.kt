@@ -2,31 +2,30 @@ package com.example.submissionawaldicoding.ui.detail
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.submissionawaldicoding.data.response.EventResponse
-import com.example.submissionawaldicoding.data.response.ListEventsItem
+import com.example.submissionawaldicoding.data.response.DetailEventResponse
 import com.example.submissionawaldicoding.data.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class DetailEventViewModel : ViewModel() {
-    private val _eventDetail = MutableLiveData<ListEventsItem>()
-    val eventDetail: MutableLiveData<ListEventsItem> get() = _eventDetail
+    private val _eventDetail = MutableLiveData<DetailEventResponse?>()
+    val eventDetail: MutableLiveData<DetailEventResponse?> get() = _eventDetail
 
     fun fetchEventDetail(id: String) {
         val apiService = ApiConfig.getApiService()
         val call = apiService.getDetailEvent(id)
-        call.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
+        call.enqueue(object : Callback<DetailEventResponse> {
+            override fun onResponse(call: Call<DetailEventResponse>, response: Response<DetailEventResponse>) {
                 if (response.isSuccessful) {
-                    val eventDetailResponse = response.body()
-                    if (eventDetailResponse != null && eventDetailResponse.listEvents.isNotEmpty()) {
-                        _eventDetail.value = eventDetailResponse.listEvents[0]
+                    val detailEventResponse = response.body()
+                    if (detailEventResponse != null && !detailEventResponse.error!!) {
+                        _eventDetail.value = detailEventResponse
                     }
                 }
             }
 
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+            override fun onFailure(call: Call<DetailEventResponse>, t: Throwable) {
             }
         })
     }

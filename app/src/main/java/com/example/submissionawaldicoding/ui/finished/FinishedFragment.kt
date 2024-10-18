@@ -1,6 +1,8 @@
 package com.example.submissionawaldicoding.ui.finished
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.submissionawal.ui.EventDetailAdapter
 import com.example.submissionawaldicoding.data.response.ListEventsItem
 import com.example.submissionawaldicoding.databinding.FragmentFinishedBinding
-import com.example.submissionawaldicoding.ui.EventAdapter
+import com.example.submissionawaldicoding.ui.detail.DetailActivity
 
 class FinishedFragment : Fragment() {
 
@@ -41,7 +44,13 @@ class FinishedFragment : Fragment() {
     }
 
     private fun setEventData(events: List<ListEventsItem>) {
-        val adapter = EventAdapter()
+        val adapter = EventDetailAdapter { event ->
+            Log.d("FinishedFragment", "Selected Event ID: ${event.id}")
+            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                putExtra("EVENT_ID", event.id.toString())
+            }
+            startActivity(intent)
+        }
         adapter.submitList(events)
         binding.rvFinished.adapter = adapter
     }
